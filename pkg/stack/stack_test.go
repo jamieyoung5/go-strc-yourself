@@ -1,10 +1,10 @@
-package strc
+package stack
 
 import (
 	"testing"
 )
 
-func TestPush(t *testing.T) {
+func TestStackPush(t *testing.T) {
 	var tests = []struct {
 		input []int
 		want  []int
@@ -28,7 +28,7 @@ func TestPush(t *testing.T) {
 	}
 }
 
-func TestPop(t *testing.T) {
+func TestStackPop(t *testing.T) {
 	var tests = []struct {
 		input []int
 		want  []int
@@ -54,7 +54,7 @@ func TestPop(t *testing.T) {
 	}
 }
 
-func TestPeek(t *testing.T) {
+func TestStackPeek(t *testing.T) {
 	var tests = []struct {
 		input []int
 		want  int
@@ -75,7 +75,7 @@ func TestPeek(t *testing.T) {
 	}
 }
 
-func TestIsEmpty(t *testing.T) {
+func TestStackIsEmpty(t *testing.T) {
 	s := NewStack[int]()
 	if !s.IsEmpty() {
 		t.Errorf("IsEmpty() = %v, want %v", s.IsEmpty(), true)
@@ -86,7 +86,7 @@ func TestIsEmpty(t *testing.T) {
 	}
 }
 
-func TestSize(t *testing.T) {
+func TestStackSize(t *testing.T) {
 	s := NewStack[int]()
 	if s.Size() != 0 {
 		t.Errorf("Size() = %v, want %v", s.Size(), 0)
