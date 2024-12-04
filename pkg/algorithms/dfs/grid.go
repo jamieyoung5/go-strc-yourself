@@ -4,20 +4,28 @@ type Point struct {
 	X, Y int
 }
 
-// directions all eight possible movements from a cell.
-var directions = []Point{
-	{-1, 0},  // up
-	{1, 0},   // down
-	{0, -1},  // left
-	{0, 1},   // right
-	{-1, -1}, // up-left
-	{-1, 1},  // up-right
-	{1, -1},  // down-left
-	{1, 1},   // down-right
+type PatternOccurrence[T comparable] struct {
+	Points    map[T]Point
+	Direction Direction
 }
 
+type Direction Point
+
+var (
+	Up        = Direction(Point{-1, 0})
+	Down      = Direction(Point{1, 0})
+	Left      = Direction(Point{0, -1})
+	Right     = Direction(Point{0, 1})
+	UpLeft    = Direction(Point{-1, -1})
+	UpRight   = Direction(Point{-1, 1})
+	DownLeft  = Direction(Point{1, -1})
+	DownRight = Direction(Point{1, 1})
+
+	directions = []Direction{Up, Down, Left, Right, UpLeft, UpRight, DownLeft, DownRight}
+)
+
 // SearchGrid searches for occurrences of a 'pattern' in a grid and returns variations of the pattern found
-func SearchGrid[T comparable](grid [][]T, pattern []T) []map[T]Point {
+func SearchGrid[T comparable](grid [][]T, pattern []T) []PatternOccurrence[T] {
 	rows := len(grid)
 	if rows == 0 {
 		return nil
@@ -27,14 +35,17 @@ func SearchGrid[T comparable](grid [][]T, pattern []T) []map[T]Point {
 		return nil
 	}
 
-	var occurrences []map[T]Point
+	var occurrences []PatternOccurrence[T]
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
 
 			// check all directions
 			for _, dir := range directions {
-				if occurrence := searchFromCell(grid, pattern, i, j, dir.X, dir.Y); occurrence != nil {
-					occurrences = append(occurrences, occurrence)
+				if points := searchFromCell(grid, pattern, i, j, dir.X, dir.Y); points != nil {
+					occurrences = append(occurrences, PatternOccurrence[T]{
+						Points:    points,
+						Direction: dir,
+					})
 				}
 			}
 		}
@@ -47,7 +58,7 @@ func searchFromCell[T comparable](grid [][]T, pattern []T, x, y, dx, dy int) map
 	rows := len(grid)
 	cols := len(grid[0])
 
-	occurrence := make(map[T]Point, rows)
+	point := make(map[T]Point, rows)
 	for k := 0; k < len(pattern); k++ {
 		nx := x + k*dx
 		ny := y + k*dy
@@ -57,7 +68,8 @@ func searchFromCell[T comparable](grid [][]T, pattern []T, x, y, dx, dy int) map
 		if grid[nx][ny] != pattern[k] {
 			return nil
 		}
-		occurrence[pattern[k]] = Point{nx, ny}
+		point[pattern[k]] = Point{nx, ny}
 	}
-	return occurrence
+
+	return point
 }
