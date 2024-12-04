@@ -23,6 +23,17 @@ func Equal[T comparable](a, b []T) bool {
 	return true
 }
 
+func CountDuplicates[T comparable](s []T) int {
+	duplicates := 0
+	counted := Counts(s)
+	for c := range counted {
+		if counted[c] > 1 {
+			duplicates++
+		}
+	}
+	return duplicates
+}
+
 func Counts[V comparable](vs []V) map[V]int {
 	return CountsFunc(vs, func(v V) V { return v })
 }
