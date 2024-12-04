@@ -16,44 +16,48 @@ var directions = []Point{
 	{1, 1},   // down-right
 }
 
-// SearchGrid searches for occurences of a 'pattern' in a grid.
-func SearchGrid[T comparable](grid [][]T, pattern []T) int {
-	count := 0
+// SearchGrid searches for occurrences of a 'pattern' in a grid and returns variations of the pattern found
+func SearchGrid[T comparable](grid [][]T, pattern []T) []map[T]Point {
 	rows := len(grid)
 	if rows == 0 {
-		return 0
+		return nil
 	}
 	cols := len(grid[0])
 	if cols == 0 || len(pattern) == 0 {
-		return 0
+		return nil
 	}
 
+	var occurrences []map[T]Point
 	for i := 0; i < rows; i++ {
 		for j := 0; j < cols; j++ {
 
 			// check all directions
 			for _, dir := range directions {
-				if searchFromCell(grid, pattern, i, j, dir.X, dir.Y) {
-					count++
+				if occurrence := searchFromCell(grid, pattern, i, j, dir.X, dir.Y); occurrence != nil {
+					occurrences = append(occurrences, occurrence)
 				}
 			}
 		}
 	}
-	return count
+
+	return occurrences
 }
 
-func searchFromCell[T comparable](grid [][]T, pattern []T, x, y, dx, dy int) bool {
+func searchFromCell[T comparable](grid [][]T, pattern []T, x, y, dx, dy int) map[T]Point {
 	rows := len(grid)
 	cols := len(grid[0])
+
+	occurrence := make(map[T]Point, rows)
 	for k := 0; k < len(pattern); k++ {
 		nx := x + k*dx
 		ny := y + k*dy
 		if nx < 0 || ny < 0 || nx >= rows || ny >= cols {
-			return false
+			return nil
 		}
 		if grid[nx][ny] != pattern[k] {
-			return false
+			return nil
 		}
+		occurrence[pattern[k]] = Point{nx, ny}
 	}
-	return true
+	return occurrence
 }
