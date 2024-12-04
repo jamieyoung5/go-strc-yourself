@@ -2,10 +2,7 @@ package dlx
 
 import (
 	"fmt"
-	"math"
 )
-
-const maxSolutions = math.MaxInt8
 
 type Matrix struct {
 	Root *Node
@@ -99,7 +96,7 @@ func (m *Matrix) AppendRow(columnIds []string) {
 	}
 }
 
-func (m *Matrix) Search(solution []*Node, solutions *[][]*Node) {
+func (m *Matrix) Search(solution []*Node, solutions *[][]*Node, maxSolutions int) {
 	if len(*solutions) >= maxSolutions {
 		return
 	}
@@ -127,7 +124,7 @@ func (m *Matrix) Search(solution []*Node, solutions *[][]*Node) {
 			j.Column.Cover()
 		}
 
-		m.Search(solution, solutions)
+		m.Search(solution, solutions, maxSolutions)
 
 		// Uncover all columns in this row for backtracking
 		for j := r.Left; j != r; j = j.Left {
