@@ -1,5 +1,20 @@
 package sliceutil
 
+import (
+	"math/rand"
+)
+
+// RandomSubset takes a random sub-slice of length n from a given slice s
+func RandomSubset[T any](s []T, n int) []T {
+	if n > len(s) {
+		n = len(s)
+	}
+
+	rand.Shuffle(len(s), func(i, j int) { s[i], s[j] = s[j], s[i] })
+
+	return s[:n]
+}
+
 // Reverse reverses a slice
 func Reverse[T any](s []T) []T {
 	reversed := make([]T, len(s))
